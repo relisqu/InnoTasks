@@ -1,6 +1,7 @@
+import os
 import sqlite3
 
-conn = sqlite3.connect('../data.db', check_same_thread=False)
+conn = sqlite3.connect('data.db', check_same_thread=False)
 c = conn.cursor()
 
 
@@ -20,14 +21,24 @@ def get_user_by_username(username):
 
 
 def register_user(username, password_hash):
+    user = get_user_by_username(username)
+    print(f"reg: {user}")
+    if user:
+        return False
     c.execute('INSERT INTO users(username, password_hash) VALUES (?, ?)', (username, password_hash))
     conn.commit()
+    return get_user_by_username(username)
 
 
 def authenticate_user(username, password_hash):
-    c.execute('SELECT * FROM users WHERE username=? AND password_hash=?', (username, password_hash))
-    user = c.fetchone()
-    return user
+    user = get_user_by_username(username)
+    print(f"init vals: {username}, {password_hash}")
+    print(f"try auth: {user}")
+    if not user:
+        return False
+    if user[2] == password_hash:
+        return user
+    return False
 
 
 def add_data(user_id, task, task_status, task_due_date):

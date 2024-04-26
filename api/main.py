@@ -14,17 +14,19 @@ def start():
 # Route to register a new user
 @app.post("/register", response_model=repo.User)
 async def register_user(user: repo.User):
-    repo.register_user(user)
+    try:
+        repo.register_user(user)
+    except ValueError:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="User already exists")
     return user
 
 
 # Route for user login
 @app.post("/login")
 async def login(user: repo.UserLogin):
-    temp = repo.login_user(user)
-    if temp:
-        return temp
-    else:
+    try:
+        return repo.login_user(user)
+    except ValueError:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid username or password")
 
 

@@ -35,6 +35,7 @@ def main():
         if st.button("Login"):
             if username and password:
                 user = login(username, password)
+                print(user)
                 if user:
                     user_id = user[0]  # Set user_id
                     st.success("Logged in successfully!")
@@ -160,7 +161,9 @@ def register(username, password):
     endpoint = f"{url}/register"
     payload = {"username": username, "password": password}
     resp = requests.post(endpoint, json=payload)
-    return resp.json()
+    if resp.status_code == 200:
+        return resp.json()
+    raise ValueError(f"{resp.status_code}: {resp.text}")
 
 
 # Function to send a login request to FastAPI
@@ -168,7 +171,11 @@ def login(username, password):
     endpoint = f"{url}/login"
     payload = {"username": username, "password": password}
     response = requests.post(endpoint, json=payload)
-    return response.json()
+    print(f"resp login: {response}")
+    if response.status_code == 200:
+        print(f"resp json: {response.json()}")
+        return response.json()
+    raise ValueError("Invalid username or password")
 
 
 def add_task(user_id, task, task_status, task_due_date):

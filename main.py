@@ -1,11 +1,8 @@
 import streamlit as st
 import pandas as pd 
-from db import * 
 import streamlit.components.v1 as stc
 import hashlib
-
-
-
+from db import *
 # Data Viz Pkgs
 import plotly.express as px 
 
@@ -22,103 +19,46 @@ HTML_BANNER = """
 user_id = None
 
 login_menu = st.empty()
-
 def main():
-    
-    global user_id
     create_table()
+    global user_id
 
     with login_menu.container():
         stc.html(HTML_BANNER)
-        
-        # Menu options
-        menu = ["Login", "Register", "About"]
-        choice = st.sidebar.selectbox("Menu", menu)
+       
+        st.subheader("Login")
+        username = st.text_input("Username")
+        password = st.text_input("Password", type="password")
 
-        # Flag to control login/register form visibility
-        show_login = False
-        show_register = False
-
-        if choice == "Login":
-            show_login = True
-        elif choice == "Register":
-            show_register = True
-
-        if show_login:
-            st.subheader("Login")
-            username = st.text_input("Username")
-            password = st.text_input("Password", type="password")
-
-            if st.button("Login"):
+        if st.button("Login"):
                 password_hash = hashlib.sha256(password.encode()).hexdigest()
                 user = authenticate_user(username, password_hash)
                 if user:
                     user_id = user[0]  # Set user_id
-                    st.success("Logged in successfully!") 
-                    login_menu.empty()   
-                    st.sidebar.empty()             
-                    menu = ["Create", "Read", "Update", "Delete"]
-                    choice = st.sidebar.selectbox("Menu", menu)
-                    return
+                    st.success("Logged in successfully!")
+                    login_menu.empty()  # Clear the login menu
+                    main_application(user_id)
                 else:
                     st.error("Invalid username or password")
-
-        elif show_register:
-            st.subheader("Register")
-            new_username = st.text_input("New Username")
-            new_password = st.text_input("New Password", type="password")
-
-            if st.button("Register"):
-                # Check if username already exists
-                if get_user_by_username(new_username):
-                    st.error("Username already exists. Please choose a different one.")
-                else:
-                    # Hash the password
-                    password_hash = hashlib.sha256(new_password.encode()).hexdigest()
-                    # Register the user
-                    register_user(new_username, password_hash)
-                    st.success("Registration successful! You can now login.")
-
-        elif choice == "About":
-            st.subheader("About")
-            st.write("This is a Streamlit ToDo App with CRUD operations.")
+            
+        if st.button("Register"):
+                    # Check if username already exists
+            if get_user_by_username(username):
+                st.error("Username already exists. Please choose a different one.")
+            else:
+                # Hash the password
+                password_hash = hashlib.sha256(password.encode()).hexdigest()
+                # Register the user
+                register_user(password, password_hash)
+                st.success("Registration successful! You can now login.")
         
-        # If user is logged in, show the main application
-     #   if user_id is not None:
-    #     main_application()
-
-def main_application():
-    # Main application code for CRUD operations
-    st.subheader("Welcome to the ToDo App")
-    menu = ["Create", "Read", "Update", "Delete"]
-    choice = st.sidebar.selectbox("Menu", menu)
-
-
-    if choice == "Create":
-        # Code for adding tasks
-        st.write("Create functionality will be implemented here")
-        
-    elif choice == "Read":
-        # Code for reading tasks
-        st.write("Read functionality will be implemented here")
-        
-    elif choice == "Update":
-        # Code for updating tasks
-        st.write("Update functionality will be implemented here")
-        
-    elif choice == "Delete":
-        # Code for deleting tasks
-        st.write("Delete functionality will be implemented here")
-
-
-def main_application2(user_id):
+def main_application(user_id):
 	stc.html(HTML_BANNER)
 
 
-	menu = ["Create","Read","Update","Delete","About"]
+	menu = ["Read","Create","Update","Delete","About"]
 	choice = st.sidebar.selectbox("Menu",menu)
-	create_table()
-
+	
 	if choice == "Create":
 		st.subheader("Add Item")
 		col1,col2 = st.columns(2)
@@ -131,14 +71,14 @@ def main_application2(user_id):
 			task_due_date = st.date_input("Due Date")
 
 		if st.button("Add Task"):
-			add_data(task,task_status,task_due_date)
+			add_data(user_id,task,task_status,task_due_date)
 			st.success("Added ::{} ::To Task".format(task))
 
 
 	elif choice == "Read":
 		# st.subheader("View Items")
 		with st.expander("View All"):
-			result = view_all_data()
+			result = view_all_data(user_id)
 			# st.write(result)
 			clean_df = pd.DataFrame(result,columns=["Task","Status","Date"])
 			st.dataframe(clean_df)
@@ -156,14 +96,14 @@ def main_application2(user_id):
 	elif choice == "Update":
 		st.subheader("Edit Items")
 		with st.expander("Current Data"):
-			result = view_all_data()
+			result = view_all_data(user_id)
 			# st.write(result)
 			clean_df = pd.DataFrame(result,columns=["Task","Status","Date"])
 			st.dataframe(clean_df)
 
-		list_of_tasks = [i[0] for i in view_all_task_names()]
+		list_of_tasks = [i[0] for i in view_all_task_names(user_id)]
 		selected_task = st.selectbox("Task",list_of_tasks)
-		task_result = get_task(selected_task)
+		task_result = get_task(user_id,selected_task)
 		# st.write(task_result)
 
 		if task_result:
@@ -181,11 +121,11 @@ def main_application2(user_id):
 				new_task_due_date = st.date_input(task_due_date)
 
 			if st.button("Update Task"):
-				edit_task_data(new_task,new_task_status,new_task_due_date,task,task_status,task_due_date)
+				edit_task_data(user_id,new_task,new_task_status,new_task_due_date,task,task_status,task_due_date)
 				st.success("Updated ::{} ::To {}".format(task,new_task))
 
 			with st.expander("View Updated Data"):
-				result = view_all_data()
+				result = view_all_data(user_id)
 				# st.write(result)
 				clean_df = pd.DataFrame(result,columns=["Task","Status","Date"])
 				st.dataframe(clean_df)
@@ -194,19 +134,19 @@ def main_application2(user_id):
 	elif choice == "Delete":
 		st.subheader("Delete")
 		with st.expander("View Data"):
-			result = view_all_data()
+			result = view_all_data(user_id)
 			# st.write(result)
 			clean_df = pd.DataFrame(result,columns=["Task","Status","Date"])
 			st.dataframe(clean_df)
 
-		unique_list = [i[0] for i in view_all_task_names()]
+		unique_list = [i[0] for i in view_all_task_names(user_id)]
 		delete_by_task_name =  st.selectbox("Select Task",unique_list)
 		if st.button("Delete"):
-			delete_data(delete_by_task_name)
+			delete_data(user_id,delete_by_task_name)
 			st.warning("Deleted: '{}'".format(delete_by_task_name))
 
 		with st.expander("Updated Data"):
-			result = view_all_data()
+			result = view_all_data(user_id)
 			# st.write(result)
 			clean_df = pd.DataFrame(result,columns=["Task","Status","Date"])
 			st.dataframe(clean_df)

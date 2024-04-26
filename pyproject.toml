@@ -1,0 +1,34 @@
+[tool.poetry]
+name = "innotasks"
+version = "0.1.0"
+description = ""
+authors = ["Anna Kopeikina <you@example.com>"]
+readme = "README.md"
+
+[tool.poetry.scripts]
+api = "api.main:start"
+frontend = "innotasks.main:start"
+
+
+[tool.poetry.dependencies]
+python = "^3.12"
+fastapi = "^0.110.2"
+pydantic = "^2.7.1"
+passlib = "^1.7.4"
+streamlit = "^1.33.0"
+plotly = "^5.21.0"
+uvicorn = "^0.29.0"
+poetry-dotenv-plugin = "^0.2.0"
+bcrypt = "^4.1.2"
+
+[package]
+packages = [
+    { include = "innotasks", from = "." },
+    { include = "api", from = "." },
+    { include = "databse", from = "." },
+    { include = "frontend", from = "."},
+    { include = "repository", from = "."}
+]
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

@@ -21,19 +21,19 @@ def authenticate_user(username, password_hash):
     c.execute('SELECT * FROM users WHERE username=? AND password_hash=?', (username, password_hash))
     user = c.fetchone()
     return user
+
 def add_data(user_id, task, task_status, task_due_date):
     c.execute('INSERT INTO taskstable(user_id, task, task_status, task_due_date) VALUES (?, ?, ?, ?)', (user_id, task, task_status, task_due_date))
     conn.commit()
 
 
 def view_all_data(user_id):
-    c.execute('SELECT * FROM taskstable WHERE user_id=?', (user_id,))
+    c.execute('SELECT task, task_status, task_due_date FROM taskstable WHERE user_id=?', (user_id,))
     data = c.fetchall()
     return data
 
-
 def view_all_task_names(user_id):
-    c.execute('SELECT DISTINCT task FROM taskstable WHERE user_id=?', (user_id,))
+    c.execute('SELECT DISTINCT task FROM taskstable WHERE user_id=?', user_id)
     data = c.fetchall()
     return data
 

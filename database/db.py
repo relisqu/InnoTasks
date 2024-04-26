@@ -5,7 +5,7 @@ c = conn.cursor()
 def create_table():
     c.execute('CREATE TABLE IF NOT EXISTS users(id INTEGER PRIMARY KEY, username TEXT UNIQUE, password_hash TEXT)')
 
-    c.execute('CREATE TABLE IF NOT EXISTS taskstable(id INTEGER PRIMARY KEY, user_id INTEGER, task TEXT, task_status TEXT, task_due_date DATE, FOREIGN KEY(user_id) REFERENCES users(id))')
+    c.execute('CREATE TABLE IF NOT EXISTS taskstable(id INTEGER PRIMARY KEY, user_id INTEGER, task TEXT, task_status TEXT, task_priority TEXT, task_due_date DATE, FOREIGN KEY(user_id) REFERENCES users(id))')
 
 def get_user_by_username(username):
     c.execute('SELECT * FROM users WHERE username=?', (username,))
@@ -22,14 +22,15 @@ def authenticate_user(username, password_hash):
     user = c.fetchone()
     return user
 
-def add_data(user_id, task, task_status, task_due_date):
-    c.execute('INSERT INTO taskstable(user_id, task, task_status, task_due_date) VALUES (?, ?, ?, ?)', (user_id, task, task_status, task_due_date))
+def add_data(user_id, task, task_status, task_priority, task_due_date):
+    c.execute('INSERT INTO taskstable(user_id, task, task_status, task_priority TEXT,  task_due_date) VALUES (?, ?, ?, ?)', (user_id, task, task_status, task_priority,task_due_date))
     conn.commit()
 
 
 def view_all_data(user_id):
-    c.execute('SELECT task, task_status, task_due_date FROM taskstable WHERE user_id=?', (user_id,))
+    c.execute('SELECT task, task_status, task_priority, task_due_date FROM taskstable WHERE user_id=?', (user_id,))
     data = c.fetchall()
+    #enumerated_data = [(i+1, *task) for i, task in enumerate(data)]
     return data
 
 def view_all_task_names(user_id):

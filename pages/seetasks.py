@@ -8,6 +8,7 @@ from database.db import *
 
 user_id = database.settings.user_id
 print(user_id)
+
 if(user_id is None):
       st.text("Please login")
 else:
@@ -15,6 +16,6 @@ else:
 
                 # st.write(result)
 
-    clean_df = pd.DataFrame(result, columns=['Task', 'Status',
+    clean_df = pd.DataFrame(result, columns=['Task', 'Status', "Priority"
                                         'Date'])
     st.dataframe(clean_df)

@@ -20,5 +20,5 @@ else:
         task_due_date = st.date_input('Due Date')
 
         if st.button('Add Task'):
-            add_data(database.settings.user_id, task, task_status, task_due_date)
-            st.success('Added ::{} ::To Task'.format(task))
+            add_data(database.settings.user_id, task, task_status,task_priority, task_due_date)
+            st.success('Added :: {} :: to task list'.format(task))

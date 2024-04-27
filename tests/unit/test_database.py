@@ -18,7 +18,6 @@ class TestDatabaseFunctions(unittest.TestCase):
 
     def test_delete_user_tasks_and_check_existence(self):
 
-        self.clear_test_user()
 
         user = self.database.register_user("test_user", "password123")
         self.database.add_data(user[0], 'Task 1', 'ToDo', '2024-04-30')
@@ -29,21 +28,15 @@ class TestDatabaseFunctions(unittest.TestCase):
         self.assertEqual(len(tasks_after_deletion), 0, "No tasks should exist after deletion")
 
     def test_register_user(self):
-        # Test user registration
-        self.clear_test_user()
         self.assertTrue(self.database.register_user("test_user", "password123"))
         self.assertFalse(self.database.register_user("test_user", "password123"))  # Duplicate registration should fail
 
     def test_authenticate_user(self):
-        # Test user authentication
-        self.clear_test_user()
         self.database.register_user("test_user", "password123")
         self.assertTrue(self.database.authenticate_user("test_user", "password123"))
         self.assertFalse(self.database.authenticate_user("test_user", "wrong_password"))
 
     def test_add_and_view_task(self):
-        # Test adding and viewing tasks
-        self.clear_test_user()
         user = self.database.register_user("test_user", "password123")
         self.database.add_data(user[0], "Test Task", "ToDo", "2024-05-01")
         tasks = self.database.view_all_data(user[0])
@@ -51,8 +44,6 @@ class TestDatabaseFunctions(unittest.TestCase):
         self.assertEqual(tasks[0][2], "Test Task")
 
     def test_edit_task(self):
-        # Test editing a task
-        self.clear_test_user()
         user = self.database.register_user("test_user", "password123")
         self.database.add_data(user[0], "Test Task", "ToDo", "2024-05-01")
         self.database.edit_task_data(user[0], "Updated Task", "Done", "2024-05-02", "Test Task", "ToDo", "2024-05-01")
@@ -62,8 +53,6 @@ class TestDatabaseFunctions(unittest.TestCase):
         self.assertEqual(tasks[0][4], "2024-05-02")
 
     def test_delete_task(self):
-        # Test deleting a task
-        self.clear_test_user()
         user = self.database.register_user("test_user", "password123")
         self.database.add_data(user[0], "Test Task", "ToDo", "2024-05-01")
         self.database.delete_data(user[0], "Test Task")
@@ -71,8 +60,6 @@ class TestDatabaseFunctions(unittest.TestCase):
         self.assertEqual(len(tasks), 0)
 
     def test_get_task_by_status(self):
-        # Test getting tasks by status
-        self.clear_test_user()
         user = self.database.register_user("test_user", "password123")
         self.database.add_data(user[0], "Test Task 1", "ToDo", "2024-05-01")
         self.database.add_data(user[0], "Test Task 2", "Done", "2024-05-02")
@@ -81,23 +68,17 @@ class TestDatabaseFunctions(unittest.TestCase):
         self.assertEqual(tasks[0][2], "Test Task 2")
 
     def test_get_task_by_username(self):
-        # Test getting user by username
-        self.clear_test_user()
         self.database.register_user("test_user", "password123")
         user = self.database.get_user_by_username("test_user")
         self.assertIsNotNone(user)
         self.assertEqual(user[1], "test_user")
 
     def test_get_task(self):
-        # Test getting a task by task name
-        self.clear_test_user()
         user = self.database.register_user("test_user", "password123")
         self.database.add_data(user[0], "Test Task", "ToDo", "2024-05-01")
         task = self.database.get_task(user[0], "Test Task")
         self.assertIsNotNone(task)
         self.assertEqual(task[0][2], "Test Task")
 
-    def clear_test_user(self):
-        print("god help us all")
 if __name__ == '__main__':
     unittest.main()

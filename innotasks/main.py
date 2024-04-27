@@ -12,19 +12,15 @@ import plotly.express as px
 HTML_BANNER = """
     <div style="background-color:#464e5f;padding:10px;border-radius:10px">
     <h1 style="color:white;text-align:center;">ToDo App (CRUD)</h1>
-    <p style="color:white;text-align:center;">Built with Streamlit</p>
+    <p style="color:white;text-align:center;">Built with Stans Team</p>
     </div>
     """
 
-# Global variable to store user ID
-user_id = None
 
 login_menu = st.empty()
 
 
-def main():
-    global user_id
-
+def main_login():
     with login_menu.container():
         stc.html(HTML_BANNER)
 
@@ -37,7 +33,8 @@ def main():
                 user = login(username, password)
                 print(user)
                 if user:
-                    user_id = user[0]  # Set user_id
+                    user_id = user[0]
+                    st.session_state['user_id'] = user_id # Set the user ID
                     st.success("Logged in successfully!")
                     login_menu.empty()  # Clear the login menu
                     main_application(user_id)
@@ -60,7 +57,7 @@ def main():
 def main_application(user_id):
     stc.html(HTML_BANNER)
 
-    menu = ["Read", "Create", "Update", "Delete", "About"]
+    menu = ["Read", "Create", "Update", "Delete"]
     choice = st.sidebar.selectbox("Menu", menu)
 
     if choice == "Create":
@@ -72,10 +69,10 @@ def main_application(user_id):
 
         with col2:
             task_status = st.selectbox("Status", ["ToDo", "Doing", "Done"])
-            task_due_date = st.date_input("Due Date")
+            task_due_date = str(st.date_input("Due Date"))
 
         if st.button("Add Task"):
-            req.add_task(user_id, task, task_status, task_due_date)
+            add_task(user_id, task, task_status, task_due_date)
             st.success("Added ::{} ::To Task".format(task))
 
     elif choice == "Read":
@@ -177,6 +174,16 @@ def login(username, password):
         return response.json()
     raise ValueError("Invalid username or password")
 
+def view_all_data(user_id):
+    endpoint = f"{url}/tasks/{user_id}"
+    response = requests.get(endpoint)
+    print(f"resp data: {response}")
+    if response.status_code == 200:
+        print(f"resp data success: {response.json()}")
+        return response.json()
+
+    raise ValueError("Something got wrong :(", response.status_code)
+
 
 def add_task(user_id, task, task_status, task_due_date):
     endpoint = f"{url}/task"
@@ -188,4 +195,11 @@ def add_task(user_id, task, task_status, task_due_date):
 if __name__ == '__main__':
     if url is None:
         st.warning("API_URL environment variable not set.")
-    main()
+
+    # Check from session state whether user is authenticated
+    if 'user_id' not in st.session_state:
+        main_login()
+    else:
+        user_id = st.session_state['user_id']
+        print('user_id', user_id)
+        main_application(user_id)

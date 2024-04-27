@@ -32,8 +32,8 @@ def register_user(username, password_hash):
 
 def authenticate_user(username, password_hash):
     user = get_user_by_username(username)
-    print(f"init vals: {username}, {password_hash}")
-    print(f"try auth: {user}")
+    print(f"authenticate_user init vals: {username}, {password_hash}")
+    print(f"authenticate_user try auth: {user}")
     if not user:
         return False
     if user[2] == password_hash:
@@ -50,6 +50,7 @@ def add_data(user_id, task, task_status, task_due_date):
 def view_all_data(user_id):
     c.execute('SELECT * FROM taskstable WHERE user_id=?', (user_id,))
     data = c.fetchall()
+    print(f'view all data: {data}')
     return data
 
 

@@ -34,3 +34,10 @@ async def login(user: repo.UserLogin):
 async def add_task(user_id: int, task: str, task_status: str, task_due_date: str):
     repo.add_task(user_id, task, task_status, task_due_date)
     return {"message": "Task added successfully"}
+
+@app.get('/tasks/{user_id}')
+async def view_all_data(user_id: int):
+    try: 
+        return repo.view_all_data(user_id)
+    except ValueError:
+        print('get /tasks error', ValueError)

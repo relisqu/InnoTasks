@@ -23,7 +23,7 @@ def authenticate_user(username, password_hash):
     return user
 
 def add_data(user_id, task, task_status, task_priority, task_due_date):
-    c.execute('INSERT INTO taskstable(user_id, task, task_status, task_priority TEXT,  task_due_date) VALUES (?, ?, ?, ?)', (user_id, task, task_status, task_priority,task_due_date))
+    c.execute('INSERT INTO taskstable(user_id, task, task_status, task_priority,  task_due_date) VALUES (?, ?, ?, ?, ?)', (user_id, task, task_status, task_priority,task_due_date))
     conn.commit()
 
 

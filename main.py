@@ -24,7 +24,7 @@ HTML_BANNER = \
 
 
 login_menu = st.empty()
-
+create_table()
 def login():
 	with login_menu.container():
 		stc.html(HTML_BANNER)

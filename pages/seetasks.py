@@ -15,7 +15,7 @@ else:
     result = view_all_data(database.settings.user_id)
 
                 # st.write(result)
-
+    print(result)
     clean_df = pd.DataFrame(result, columns=['Task', 'Status', "Priority"
-                                        'Date'])
+                                        ,'Date'])
     st.dataframe(clean_df)

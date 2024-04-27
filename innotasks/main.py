@@ -8,6 +8,8 @@ from os import environ
 import subprocess
 # Data Viz Pkgs
 import plotly.express as px
+from datetime import datetime
+from repository.repository import add_task, view_all_task_names, get_task, edit_task_data, delete_data
 
 HTML_BANNER = """
     <div style="background-color:#464e5f;padding:10px;border-radius:10px">
@@ -69,85 +71,65 @@ def main_application(user_id):
 
         with col2:
             task_status = st.selectbox("Status", ["ToDo", "Doing", "Done"])
+            task_priority = st.selectbox('Priority', ['Not important', 'Important','Very important','Critical'])
             task_due_date = str(st.date_input("Due Date"))
 
         if st.button("Add Task"):
-            add_task(user_id, task, task_status, task_due_date)
+            add_task(user_id, task, task_status, task_priority, task_due_date)
             st.success("Added ::{} ::To Task".format(task))
 
     elif choice == "Read":
-        # st.subheader("View Items")
+        st.subheader("View Items")
         with st.expander("View All"):
             result = view_all_data(user_id)
-            # st.write(result)
-            clean_df = pd.DataFrame(result, columns=["Task", "Status", "Date"])
+            clean_df = pd.DataFrame(result, columns=["Task", "Status", 'Priority', "Date"])
             st.dataframe(clean_df)
 
         with st.expander("Task Status"):
             task_df = clean_df['Status'].value_counts().to_frame()
-            # st.dataframe(task_df)
             task_df = task_df.reset_index()
             st.dataframe(task_df)
 
-            p1 = px.pie(task_df, names='index', values='Status')
+            p1 = px.pie(task_df, names='count', values='Status')
             st.plotly_chart(p1, use_container_width=True)
 
     elif choice == "Update":
         st.subheader("Edit Items")
-        with st.expander("Current Data"):
-            result = view_all_data(user_id)
-            # st.write(result)
-            clean_df = pd.DataFrame(result, columns=["Task", "Status", "Date"])
-            st.dataframe(clean_df)
 
-        list_of_tasks = [i[0] for i in view_all_task_names(user_id)]
-        selected_task = st.selectbox("Task", list_of_tasks)
-        task_result = get_task(user_id, selected_task)
-        # st.write(task_result)
+        list_of_tasks = view_all_task_names(user_id)
+        selected_task = st.selectbox("Task", options=list_of_tasks, format_func=lambda x: x[0])
+
+        task_id = selected_task[1]
+        task_result = get_task(user_id, task_id)
 
         if task_result:
-            task = task_result[0][0]
-            task_status = task_result[0][1]
-            task_due_date = task_result[0][2]
+            task_id, _, task_name, task_status, task_priority, task_due_date_str = task_result[0]
+            task_due_date = datetime.strptime(task_due_date_str, "%Y-%m-%d").date()
 
             col1, col2 = st.columns(2)
 
             with col1:
-                new_task = st.text_area("Task To Do", task)
+                new_task_name = st.text_area("Task To Do", task_name)
 
             with col2:
-                new_task_status = st.selectbox(task_status, ["ToDo", "Doing", "Done"])
-                new_task_due_date = st.date_input(task_due_date)
+                new_task_status = st.selectbox('Status', ["ToDo", "Doing", "Done"])
+                new_task_priority = st.selectbox('Priority', ['Not important', 'Important','Very important','Critical'])
+                new_task_due_date = str(st.date_input(label="Due Date", value=task_due_date))
 
             if st.button("Update Task"):
-                edit_task_data(user_id, new_task, new_task_status, new_task_due_date, task, task_status, task_due_date)
-                st.success("Updated ::{} ::To {}".format(task, new_task))
-
-            with st.expander("View Updated Data"):
-                result = view_all_data(user_id)
-                # st.write(result)
-                clean_df = pd.DataFrame(result, columns=["Task", "Status", "Date"])
-                st.dataframe(clean_df)
+                edit_task_data(user_id, task_id, new_task_name, new_task_status, new_task_priority, new_task_due_date)
+                st.success("Updated ::{} ::To {}".format(task_name, new_task_name))
 
     elif choice == "Delete":
         st.subheader("Delete")
-        with st.expander("View Data"):
-            result = view_all_data(user_id)
-            # st.write(result)
-            clean_df = pd.DataFrame(result, columns=["Task", "Status", "Date"])
-            st.dataframe(clean_df)
 
-        unique_list = [i[0] for i in view_all_task_names(user_id)]
-        delete_by_task_name = st.selectbox("Select Task", unique_list)
+        list_of_tasks = view_all_task_names(user_id)
+        selected_task = st.selectbox("Select Task", options=list_of_tasks, format_func=lambda x: x[0])
+        [task_name, task_id] = selected_task
+
         if st.button("Delete"):
-            delete_data(user_id, delete_by_task_name)
-            st.warning("Deleted: '{}'".format(delete_by_task_name))
-
-        with st.expander("Updated Data"):
-            result = view_all_data(user_id)
-            # st.write(result)
-            clean_df = pd.DataFrame(result, columns=["Task", "Status", "Date"])
-            st.dataframe(clean_df)
+            delete_data(user_id, task_id)
+            st.warning("Deleted: '{}'".format(task_name))
 
 
 url = environ.get("API_URL")
@@ -177,19 +159,10 @@ def login(username, password):
 def view_all_data(user_id):
     endpoint = f"{url}/tasks/{user_id}"
     response = requests.get(endpoint)
-    print(f"resp data: {response}")
     if response.status_code == 200:
-        print(f"resp data success: {response.json()}")
         return response.json()
 
     raise ValueError("Something got wrong :(", response.status_code)
-
-
-def add_task(user_id, task, task_status, task_due_date):
-    endpoint = f"{url}/task"
-    payload = {"user_id": user_id, "task": task, "task_status": task_status, "task_due_date": task_due_date}
-    response = requests.post(endpoint, json=payload)
-    return response.json()
 
 
 if __name__ == '__main__':
@@ -201,5 +174,4 @@ if __name__ == '__main__':
         main_login()
     else:
         user_id = st.session_state['user_id']
-        print('user_id', user_id)
         main_application(user_id)

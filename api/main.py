@@ -5,7 +5,6 @@ import repository.repository as repo
 
 app = FastAPI()
 
-
 def start():
     """Launched with `poetry run start` at root level"""
     uvicorn.run("api.main:app", host="0.0.0.0", port=3000)
@@ -31,8 +30,8 @@ async def login(user: repo.UserLogin):
 
 
 @app.post("/task")
-async def add_task(user_id: int, task: str, task_status: str, task_due_date: str):
-    repo.add_task(user_id, task, task_status, task_due_date)
+async def add_task(user_id: int, task: str, task_status: str, task_priority: str, task_due_date: str):
+    repo.add_task(user_id, task, task_status, task_priority, task_due_date)
     return {"message": "Task added successfully"}
 
 @app.get('/tasks/{user_id}')

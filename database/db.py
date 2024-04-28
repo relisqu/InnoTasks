@@ -9,7 +9,7 @@ class Database:
         self.conn = sqlite3.connect(self.db_path, check_same_thread=False)
         self.c = self.conn.cursor()
         self.create_table()
-        self.backup_sqlite_db()
+        # self.backup_sqlite_db()
 
     def create_table(self):
         self.c.execute(
@@ -163,5 +163,3 @@ class Database:
             print(f"Backup created: {backup_path}")
         except Exception as e:
             print(f"Error creating backup: {e}")
-        finally:
-            self.conn.close()

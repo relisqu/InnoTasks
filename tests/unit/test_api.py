@@ -64,7 +64,8 @@ def test_view_all_data(init):
     assert response.status_code == 200
 
 
-def test_view_all_task_names(user_id: int):
+def test_view_all_task_names(init):
+    user_id = 1
     task_data = {
         "user_id": 1,
         "task": "Test task",
@@ -85,4 +86,4 @@ def test_view_all_task_names(user_id: int):
     response = client.get(f"/tasks/names/{user_id}")
     assert response.status_code == 200
     print(response.json())
-    assert response.json() == "он должен высрать json но у меня всё идет по пизде"
+    assert response.json() == [['Test task', 1], ['Test task', 2], ['Test2 task', 3]]

@@ -21,6 +21,10 @@ uvicorn = "^0.29.0"
 poetry-dotenv-plugin = "^0.2.0"
 bcrypt = "^4.1.2"
 
+[tool.poetry.group.dev.dependencies]
+httpx = "^0.27.0"
+pytest = "^8.2.0"
+
 [virtualenvs]
 create = true
 in-project = true
@@ -32,7 +36,9 @@ packages = [
     { include = "api", from = "." },
     { include = "databse", from = "." },
     { include = "frontend", from = "."},
-    { include = "repository", from = "."}
+    { include = "repository", from = "."},
+    { include = "unit_tests", from = "./tests/unit"},
+    { include = "e2e_tests", from = "./tests/e2e"}
 ]
 [build-system]
 requires = ["poetry-core"]

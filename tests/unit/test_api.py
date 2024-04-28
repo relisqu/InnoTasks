@@ -1,49 +1,58 @@
-import unittest
-from fastapi.testclient import TestClient
+import os
+
+import pytest
 from api.main import app
-from repository.repository import User, UserLogin
+from fastapi.testclient import TestClient
+
+client = TestClient(app)
 
 
-class TestApp(unittest.TestCase):
-    client = TestClient(app)
+@pytest.fixture(scope="session")
+def init(request):
+    print('\nDoing setup')
 
-    def test_register_user(self):
-        user = {"username": "test_user", "password_hash": "password123"}
-        response = self.client.post("/register", json=user)
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json(), user)
+    def fin():
+        print('\nDoing teardown')
+        os.remove("data.db")
 
-    def test_register_existing_user(self):
-        user = {"username": "test_user", "password_hash": "password123"}
-        self.client.post("/register", json=user)
-        response = self.client.post("/register", json=user)
-        self.assertEqual(response.status_code, 400)
-
-    def test_login_user(self):
-        user = {"username": "test_user", "password_hash": "password123"}
-        self.client.post("/register", json=user)
-        login_data = {"username": "test_user", "password_hash": "password123"}
-        response = self.client.post("/login", json=login_data)
-        self.assertEqual(response.status_code, 200)
-
-    def test_login_invalid_user(self):
-        user = {"username": "test_user", "password_hash": "password123"}
-        self.client.post("/register", json=user)
-        login_data = {"username": "test_user", "password_hash": "wrong_password"}
-        response = self.client.post("/login", json=login_data)
-        self.assertEqual(response.status_code, 422)
-
-    def test_add_task(self):
-        task_data = {"user_id": 1, "task": "Test task", "task_status": "ToDo", "task_due_date": "2024-05-01"}
-        response = self.client.post("/task", json=task_data)
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json(), {"message": "Task added successfully"})
-
-    def test_view_all_data(self):
-        user_id = 1
-        response = self.client.get(f"/tasks/{user_id}")
-        self.assertEqual(response.status_code, 200)
+    request.addfinalizer(fin)
 
 
-if __name__ == '__main__':
-    unittest.main()
+def test_register_user(init):
+    user = {"username": "test_user", "password": "password123"}
+    response = client.post("/register", json=user)
+    assert response.status_code == 200
+    assert user == response.json()
+
+
+def test_register_existing_user(init):
+    user = {"username": "test_user", "password": "password123"}
+    client.post("/register", json=user)
+    response = client.post("/register", json=user)
+    assert response.status_code == 400
+
+
+def test_login_user(init):
+    login_data = {"username": "test_user", "password": "password123"}
+    response = client.post("/login", json=login_data)
+    assert response.status_code == 200
+
+
+def test_login_invalid_user(init):
+    login_data = {"username": "test_user", "password": "wrong_password"}
+    response = client.post("/login", json=login_data)
+    assert response.status_code == 401
+
+
+def test_add_task(init):
+    task_data = {"user_id": 1, "task": "Test task", "task_status": "ToDo", "task_priority": "Normal",
+                 "task_due_date": "2024-05-01"}
+    response = client.post("/task", json=task_data)
+    assert response.status_code == 200
+    assert {"message": "Task added successfully"} == response.json()
+
+
+def test_view_all_data(init):
+    user_id = 1
+    response = client.get(f"/tasks/{user_id}")
+    assert response.status_code == 200

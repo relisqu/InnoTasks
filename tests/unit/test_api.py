@@ -9,10 +9,10 @@ client = TestClient(app)
 
 @pytest.fixture(scope="session")
 def init(request):
-    print('\nDoing setup')
+    print("\nDoing setup")
 
     def fin():
-        print('\nDoing teardown')
+        print("\nDoing teardown")
         os.remove("data.db")
 
     request.addfinalizer(fin)
@@ -45,8 +45,13 @@ def test_login_invalid_user(init):
 
 
 def test_add_task(init):
-    task_data = {"user_id": 1, "task": "Test task", "task_status": "ToDo", "task_priority": "Normal",
-                 "task_due_date": "2024-05-01"}
+    task_data = {
+        "user_id": 1,
+        "task": "Test task",
+        "task_status": "ToDo",
+        "task_priority": "Normal",
+        "task_due_date": "2024-05-01",
+    }
     response = client.post("/task", json=task_data)
     assert response.status_code == 200
     assert {"message": "Task added successfully"} == response.json()

@@ -56,7 +56,13 @@ def get_user(username: str):
 
 
 def add_task(task: Task):
-    db.add_data(task.user_id, task.task, task.task_status, task.task_priority, task.task_due_date)
+    db.add_data(
+        task.user_id,
+        task.task,
+        task.task_status,
+        task.task_priority,
+        task.task_due_date,
+    )
     return {"message": "Task added successfully"}
 
 
@@ -76,7 +82,14 @@ def get_task(user_id, task_id):
 
 
 def edit_task_data(task: TaskEdit):
-    db.edit_task_data(task.user_id, task.id, task.task, task.task_status, task.task_priority, task.task_due_date)
+    db.edit_task_data(
+        task.user_id,
+        task.id,
+        task.task,
+        task.task_status,
+        task.task_priority,
+        task.task_due_date,
+    )
 
 
 def delete_data(user_id, task_id):

@@ -3,12 +3,13 @@ from unittest.mock import patch
 from unittest.mock import MagicMock
 import sqlite3
 from database.db import *
+
+
 class TestDatabaseFunctions(unittest.TestCase):
 
     def setUp(self):
         # Connect to an in-memory database for testing
         self.database = Database(':memory:')
-
 
     def test_delete_user(self):
         self.database.register_user("test_user", "password123")
@@ -17,8 +18,6 @@ class TestDatabaseFunctions(unittest.TestCase):
         self.assertIsNone(user_after_deletion, "User should not exist after deletion")
 
     def test_delete_user_tasks_and_check_existence(self):
-
-
         user = self.database.register_user("test_user", "password123")
         self.database.add_data(user[0], 'Task 1', 'ToDo', '2024-04-30')
         self.database.add_data(user[0], 'Task 2', 'Doing', '2024-05-01')
@@ -79,6 +78,7 @@ class TestDatabaseFunctions(unittest.TestCase):
         task = self.database.get_task(user[0], "Test Task")
         self.assertIsNotNone(task)
         self.assertEqual(task[0][2], "Test Task")
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -155,6 +155,7 @@ bin/
 bin
 
 data.db
+**/data.db
 
 .vscode
 .vscode/

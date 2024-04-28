@@ -3,6 +3,7 @@ from fastapi.testclient import TestClient
 from api.main import app
 from repository.repository import User, UserLogin
 
+
 class TestApp(unittest.TestCase):
     client = TestClient(app)
 
@@ -35,13 +36,14 @@ class TestApp(unittest.TestCase):
     def test_add_task(self):
         task_data = {"user_id": 1, "task": "Test task", "task_status": "ToDo", "task_due_date": "2024-05-01"}
         response = self.client.post("/task", json=task_data)
-        self.assertEqual(response.status_code,200)
+        self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), {"message": "Task added successfully"})
 
     def test_view_all_data(self):
         user_id = 1
         response = self.client.get(f"/tasks/{user_id}")
         self.assertEqual(response.status_code, 200)
+
 
 if __name__ == '__main__':
     unittest.main()

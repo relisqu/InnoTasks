@@ -21,6 +21,7 @@ def init(request):
 def test_register_user(init):
     user = {"username": "test_user", "password": "password123"}
     response = client.post("/register", json=user)
+    print(response)
     assert response.status_code == 200
     assert user == response.json()
 
@@ -61,3 +62,26 @@ def test_view_all_data(init):
     user_id = 1
     response = client.get(f"/tasks/{user_id}")
     assert response.status_code == 200
+
+def test_view_all_task_names(user_id: int):
+    task_data = {
+        "user_id": 1,
+        "task": "Test task",
+        "task_status": "ToDo",
+        "task_priority": "Normal",
+        "task_due_date": "2024-05-01",
+    }
+    response = client.post("/task", json=task_data)
+    task_data = {
+        "user_id": 1,
+        "task": "Test2 task",
+        "task_status": "ToDo",
+        "task_priority": "Normal",
+        "task_due_date": "2024-05-01",
+    }
+    response = client.post("/task", json=task_data)
+
+    response = client.get(f"/tasks/names/{user_id}")
+    assert response.status_code == 200
+    print(response.json())
+    assert response.json() == "он должен высрать json но у меня всё идет по пизде"

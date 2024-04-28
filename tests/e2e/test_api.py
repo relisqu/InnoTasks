@@ -1,3 +1,4 @@
+import pytest
 import unittest
 from repository.repository import *
 from unittest.mock import patch
@@ -7,9 +8,16 @@ from database.db import *
 
 
 class TestEndToEnd(unittest.TestCase):
-    def setUp(self):
-        # Connect to an in-memory database for testing
-        self.database = Database(":memory:")
+
+    @pytest.fixture(scope="session")
+    def init(request):
+        print("\nDoing setup")
+
+        def fin():
+            print("\nDoing teardown")
+            os.remove("data.db")
+
+        request.addfinalizer(fin)
 
     def test_registration_login_add_task(self):
         # Register a new user
@@ -20,7 +28,7 @@ class TestEndToEnd(unittest.TestCase):
         # Log in with the registered user
         user_login = UserLogin(username="testuser", password="password123")
         logged_in_user = login_user(user_login)
-        self.assertEqual(logged_in_user.username, user_login.username)
+        self.assertEqual(logged_in_user[1], user_login.username)
 
         # Add a task for the logged-in user
         response = add_task(

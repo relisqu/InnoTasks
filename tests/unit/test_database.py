@@ -61,7 +61,9 @@ class TestDatabaseFunctions(unittest.TestCase):
     def test_delete_task(self):
         user = self.database.register_user("test_user", "password123")
         self.database.add_data(user[0], "Test Task", "ToDo", "Important", "2024-05-01")
-        self.database.delete_data(user[0], "Test Task")
+
+        user_tasks = self.database.view_all_task_names(user[0])
+        self.database.delete_data(user[0], dict(user_tasks)["Test Task"])
         tasks = self.database.view_all_data(user[0])
         self.assertEqual(len(tasks), 0)
 
@@ -86,7 +88,8 @@ class TestDatabaseFunctions(unittest.TestCase):
     def test_get_task(self):
         user = self.database.register_user("test_user", "password123")
         self.database.add_data(user[0], "Test Task", "ToDo", "Important", "2024-05-01")
-        task = self.database.get_task(user[0], "Test Task")
+        user_tasks = self.database.view_all_task_names(user[0])
+        task = self.database.get_task(user[0], dict(user_tasks)["Test Task"])
         self.assertIsNotNone(task)
         self.assertEqual(task[0][2], "Test Task")
 

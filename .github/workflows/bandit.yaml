@@ -1,4 +1,4 @@
-name: lab-security
+name: Bandit checks
 
 on: [push]
 
@@ -20,7 +20,7 @@ jobs:
         run: poetry install
 
       - name: Add pytest and bcrypt and bandit
-        run: poetry add pytest bcrypt
+        run: poetry add pytest bcrypt bandit
 
       - name: Perform bandit test
         run: poetry run bandit -r ./api ./database ./innotasks ./repository

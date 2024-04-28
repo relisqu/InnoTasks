@@ -17,16 +17,6 @@ HTML_BANNER = """
     """
 
 
-def make_hashes(password):
-    return hashlib.sha256(str.encode(password)).hexdigest()
-
-
-def check_hashes(password, hashed_text):
-    if make_hashes(password) == hashed_text:
-        return hashed_text
-    return False
-
-
 def main_login():
     stc.html(HTML_BANNER)
     st.subheader("Welcome to InnoTasks!")
@@ -43,7 +33,7 @@ def main_login():
 
                 if st.button("Enter"):
                     if username and password:
-                        user = login(username, make_hashes(password))
+                        user = login(username, password)
                         print(user)
                         if user:
                             user_id = user[0]
@@ -66,7 +56,7 @@ def main_login():
                 if new_passwd != new_dubl_pswd:
                     st.error("Passwords are not matched")
                 if new_user and new_passwd and new_dubl_pswd:
-                    response = register(new_user, make_hashes(new_passwd))
+                    response = register(new_user, new_passwd)
                     if response:
                         st.success("Account created successfully!")
                         st.balloons()

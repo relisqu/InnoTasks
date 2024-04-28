@@ -1,6 +1,7 @@
 import os
 import sqlite3
-
+import shutil
+from datetime import datetime
 
 class Database:
     def __init__(self, db_path="data.db"):
@@ -8,6 +9,7 @@ class Database:
         self.conn = sqlite3.connect(self.db_path, check_same_thread=False)
         self.c = self.conn.cursor()
         self.create_table()
+        self.backup_sqlite_db()
 
     def create_table(self):
         self.c.execute(
@@ -130,7 +132,21 @@ class Database:
         return data
 
     def delete_data(self, user_id, task_id):
+        self.backup_sqlite_db()
         self.c.execute(
             "DELETE FROM taskstable WHERE user_id=? AND id=?", (user_id, task_id)
         )
         self.conn.commit()
+
+
+    def backup_sqlite_db(self):
+        try:
+            timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+            backup_filename = f"backup_{timestamp}.sqlite"
+            backup_path = f"../../backups/{backup_filename}"
+            shutil.copy2(self.db_path, backup_path)
+            print(f"Backup created: {backup_path}")
+        except Exception as e:
+            print(f"Error creating backup: {e}")
+        finally:
+            self.conn.close()

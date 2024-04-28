@@ -1,3 +1,4 @@
+import hashlib
 import streamlit as st
 import pandas as pd
 import streamlit.components.v1 as stc
@@ -15,41 +16,64 @@ HTML_BANNER = """
     </div>
     """
 
-login_menu = st.empty()
+
+def make_hashes(password):
+    return hashlib.sha256(str.encode(password)).hexdigest()
+
+
+def check_hashes(password, hashed_text):
+    if make_hashes(password) == hashed_text:
+        return hashed_text
+    return False
 
 
 def main_login():
-    with login_menu.container():
-        stc.html(HTML_BANNER)
+    stc.html(HTML_BANNER)
+    st.subheader("Welcome to InnoTasks!")
+    start_menu = st.empty()
+    with start_menu.container():
+        choice = st.selectbox("Login/Sign Up", ["Login", "Sign Up"])
 
-        st.subheader("Login")
-        username = st.text_input("Username")
-        password = st.text_input("Password", type="password")
+        login_menu = st.empty()
 
-        if st.button("Login"):
-            if username and password:
-                user = login(username, password)
-                print(user)
-                if user:
-                    id_ = user[0]
-                    st.session_state["user_id"] = id_  # Set the user ID
-                    st.success("Logged in successfully!")
-                    login_menu.empty()  # Clear the login menu
-                    main_application(id_)
+        if choice == "Login":
+            with login_menu.container():
+                username = st.text_input("Username")
+                password = st.text_input("Password", type="password")
+
+                if st.button("Enter"):
+                    if username and password:
+                        user = login(username, make_hashes(password))
+                        print(user)
+                        if user:
+                            user_id = user[0]
+                            st.session_state["user_id"] = user_id  # Set the user ID
+                            st.success("Logged in successfully!")
+                            login_menu.empty()  # Clear the login menu
+                            start_menu.empty()
+                            main_application(user_id)
+                        else:
+                            st.error("Invalid username or password")
+                    else:
+                        st.warning("Please enter username and password")
+
+        if choice == "Sign Up":
+            new_user = st.text_input("Enter your unique username")
+            new_passwd = st.text_input("Create Password", type="password")
+            new_dubl_pswd = st.text_input("Password one more time", type="password")
+
+            if st.button("Create my account"):
+                if new_passwd != new_dubl_pswd:
+                    st.error("Passwords are not matched")
+                if new_user and new_passwd and new_dubl_pswd:
+                    response = register(new_user, make_hashes(new_passwd))
+                    if response:
+                        st.success("Account created successfully!")
+                        st.balloons()
+                    else:
+                        st.error("User already exists")
                 else:
-                    st.error("Invalid username or password")
-            else:
-                st.warning("Please enter username and password")
-
-        if st.button("Register"):
-            if username and password:
-                response = register(username, password)
-                if response:
-                    st.success("Registered successfully!")
-                else:
-                    st.error("User already exists")
-            else:
-                st.warning("Please enter username and password")
+                    st.warning("Please enter username and password")
 
 
 def main_application(user_logged_id):

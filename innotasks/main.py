@@ -186,7 +186,7 @@ def add_task(user_logged_id, task, task_status, task_priority, task_due_date):
         "task_priority": task_priority,
         "task_due_date": task_due_date,
     }
-    response = requests.post(endpoint, json=payload)
+    response = requests.post(endpoint, json=payload, timeout=10)
     if response.status_code == 200:
         return response.json()
     raise ValueError(f"{response.status_code}: {response.text}")
@@ -194,7 +194,7 @@ def add_task(user_logged_id, task, task_status, task_priority, task_due_date):
 
 def view_all_task_names(user_logged_id):
     endpoint = f"{url}/tasks/names/{user_logged_id}"
-    response = requests.get(endpoint)
+    response = requests.get(endpoint, timeout=10)
     if response.status_code == 200:
         return response.json()
 
@@ -203,7 +203,7 @@ def view_all_task_names(user_logged_id):
 
 def get_task(user_logged_id, task_id):
     endpoint = f"{url}/task/{user_logged_id}/{task_id}"
-    response = requests.get(endpoint)
+    response = requests.get(endpoint, timeout=10)
     if response.status_code == 200:
         return response.json()
 
@@ -227,7 +227,7 @@ def edit_task_data(
         "task_priority": new_task_priority,
         "task_due_date": new_task_due_date,
     }
-    response = requests.put(endpoint, json=payload)
+    response = requests.put(endpoint, json=payload, timeout=10)
     if response.status_code == 200:
         return response.json()
     raise ValueError(f"{response.status_code}: {response.text}")
@@ -235,7 +235,7 @@ def edit_task_data(
 
 def delete_data(user_logged_id, task_id):
     endpoint = f"{url}/task/{user_logged_id}/{task_id}"
-    response = requests.delete(endpoint)
+    response = requests.delete(endpoint, timeout=10)
     if response.status_code == 200:
         return response.json()
     raise ValueError(f"{response.status_code}: {response.text}")
@@ -245,7 +245,7 @@ def delete_data(user_logged_id, task_id):
 def register(username, password):
     endpoint = f"{url}/register"
     payload = {"username": username, "password": password}
-    resp = requests.post(endpoint, json=payload)
+    resp = requests.post(endpoint, json=payload, timeout=10)
     if resp.status_code == 200:
         return resp.json()
     raise ValueError(f"{resp.status_code}: {resp.text}")
@@ -255,7 +255,7 @@ def register(username, password):
 def login(username, password):
     endpoint = f"{url}/login"
     payload = {"username": username, "password": password}
-    response = requests.post(endpoint, json=payload)
+    response = requests.post(endpoint, json=payload, timeout=10)
     print(f"resp login: {response}")
     if response.status_code == 200:
         print(f"resp json: {response.json()}")
@@ -265,7 +265,7 @@ def login(username, password):
 
 def view_all_data(user_logged_id):
     endpoint = f"{url}/tasks/{user_logged_id}"
-    response = requests.get(endpoint)
+    response = requests.get(endpoint, timeout=10)
     if response.status_code == 200:
         return response.json()
 

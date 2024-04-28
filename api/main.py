@@ -6,11 +6,6 @@ import repository.repository as repo
 app = FastAPI()
 
 
-def start():
-    """Launched with `poetry run start` at root level"""
-    uvicorn.run("api.main:app", host="0.0.0.0", port=3000)
-
-
 # Route to register a new user
 @app.post("/register", response_model=repo.User)
 async def register_user(user: repo.User):

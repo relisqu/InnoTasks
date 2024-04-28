@@ -23,4 +23,4 @@ jobs:
         run: poetry add pytest pytest-mock pytest-cov
 
       - name: Do combined coverage
-        run: poetry run pytest --cov=api --cov=database --cov=repository --cov-branch --cov-report=term --cov-fail-under=60
+        run: poetry run pytest --cov=innotasks --cov=api --cov=database --cov=repository --cov-branch --cov-report=term --cov-fail-under=60

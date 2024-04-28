@@ -3,6 +3,7 @@ import sqlite3
 import shutil
 from datetime import datetime
 
+
 class Database:
     def __init__(self, db_path="data.db"):
         self.db_path = db_path
@@ -137,7 +138,6 @@ class Database:
             "DELETE FROM taskstable WHERE user_id=? AND id=?", (user_id, task_id)
         )
         self.conn.commit()
-
 
     def backup_sqlite_db(self):
         try:

@@ -9,7 +9,7 @@ class TestDatabaseFunctions(unittest.TestCase):
 
     def setUp(self):
         # Connect to an in-memory database for testing
-        self.database = Database(db_path=":memory:")
+        self.database = Database(db_path=":memory:", backup_path=None)
 
     def test_delete_user(self):
         self.database.register_user("test_user", "password123")

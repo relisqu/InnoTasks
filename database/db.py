@@ -1,11 +1,12 @@
 import os
 import sqlite3
-import shutil
+import io
 from datetime import datetime
-
+from pathlib import Path
 class Database:
-    def __init__(self, db_path="data.db"):
+    def __init__(self, db_path="data.db", backup_path="backups/"):
         self.db_path = db_path
+        self.backup_path = backup_path
         self.conn = sqlite3.connect(self.db_path, check_same_thread=False)
         self.c = self.conn.cursor()
         self.create_table()
@@ -138,15 +139,17 @@ class Database:
         )
         self.conn.commit()
 
-
     def backup_sqlite_db(self):
+        if self.backup_path is None:
+            return
         try:
             timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
             backup_filename = f"backup_{timestamp}.sqlite"
-            backup_path = f"../../backups/{backup_filename}"
-            shutil.copy2(self.db_path, backup_path)
-            print(f"Backup created: {backup_path}")
+            backup_path = f"{self.backup_path}{backup_filename}"
+
+            with io.open(backup_path, 'a+') as p:
+                for line in self.conn.iterdump():
+                    p.write('%s\n' % line)
+
         except Exception as e:
             print(f"Error creating backup: {e}")
-        finally:
-            self.conn.close()

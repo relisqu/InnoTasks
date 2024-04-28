@@ -32,7 +32,7 @@ def main_login():
     st.subheader("Welcome to InnoTasks!")
     start_menu = st.empty()
     with start_menu.container():
-        choice = st.selectbox('Login/Sign Up', ["Login", "Sign Up"])
+        choice = st.selectbox("Login/Sign Up", ["Login", "Sign Up"])
 
         login_menu = st.empty()
 
@@ -47,7 +47,7 @@ def main_login():
                         print(user)
                         if user:
                             user_id = user[0]
-                            st.session_state['user_id'] = user_id  # Set the user ID
+                            st.session_state["user_id"] = user_id  # Set the user ID
                             st.success("Logged in successfully!")
                             login_menu.empty()  # Clear the login menu
                             start_menu.empty()
@@ -58,9 +58,9 @@ def main_login():
                         st.warning("Please enter username and password")
 
         if choice == "Sign Up":
-            new_user = st.text_input('Enter your unique username')
-            new_passwd = st.text_input('Create Password', type='password')
-            new_dubl_pswd = st.text_input('Password one more time', type='password')
+            new_user = st.text_input("Enter your unique username")
+            new_passwd = st.text_input("Create Password", type="password")
+            new_dubl_pswd = st.text_input("Password one more time", type="password")
 
             if st.button("Create my account"):
                 if new_passwd != new_dubl_pswd:
@@ -211,12 +211,12 @@ def get_task(user_logged_id, task_id):
 
 
 def edit_task_data(
-        user_logged_id,
-        task_id,
-        new_task_name,
-        new_task_status,
-        new_task_priority,
-        new_task_due_date,
+    user_logged_id,
+    task_id,
+    new_task_name,
+    new_task_status,
+    new_task_priority,
+    new_task_due_date,
 ):
     endpoint = f"{url}/task"
     payload = {

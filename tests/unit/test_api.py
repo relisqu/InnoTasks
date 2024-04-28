@@ -63,6 +63,7 @@ def test_view_all_data(init):
     response = client.get(f"/tasks/{user_id}")
     assert response.status_code == 200
 
+
 def test_view_all_task_names(user_id: int):
     task_data = {
         "user_id": 1,

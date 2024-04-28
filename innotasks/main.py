@@ -1,4 +1,3 @@
-import hashlib
 import streamlit as st
 import pandas as pd
 import streamlit.components.v1 as stc
@@ -37,9 +36,11 @@ def main_login():
                         print(user)
                         if user:
                             user_id = user[0]
-                            st.session_state["user_id"] = user_id  # Set the user ID
+                            # Set the user ID
+                            st.session_state["user_id"] = user_id
                             st.success("Logged in successfully!")
-                            login_menu.empty()  # Clear the login menu
+                            # Clear the login menu
+                            login_menu.empty()
                             start_menu.empty()
                             main_application(user_id)
                         else:

@@ -4,10 +4,13 @@ from unittest.mock import patch
 from unittest.mock import MagicMock
 import sqlite3
 from database.db import *
+
+
 class TestEndToEnd(unittest.TestCase):
     def setUp(self):
         # Connect to an in-memory database for testing
-        self.database = Database(':memory:')
+        self.database = Database(":memory:")
+
     def test_registration_login_add_task(self):
         # Register a new user
         user = User(username="testuser", password="password123")
@@ -20,7 +23,9 @@ class TestEndToEnd(unittest.TestCase):
         self.assertEqual(logged_in_user.username, user_login.username)
 
         # Add a task for the logged-in user
-        response = add_task(logged_in_user.id, "Test task", "ToDo", "High", "2024-05-01")
+        response = add_task(
+            logged_in_user.id, "Test task", "ToDo", "High", "2024-05-01"
+        )
         self.assertEqual(response["message"], "Task added successfully")
 
         # View all tasks for the logged-in user
@@ -43,12 +48,19 @@ class TestEndToEnd(unittest.TestCase):
     def test_add_task_without_login(self):
         # Try to add a task without logging in first
         with self.assertRaises(ValueError):
-            add_task(user_id=1, task="Test task", task_status="ToDo", task_priority="High", task_due_date="2024-05-01")
+            add_task(
+                user_id=1,
+                task="Test task",
+                task_status="ToDo",
+                task_priority="High",
+                task_due_date="2024-05-01",
+            )
 
     def test_view_all_tasks_without_login(self):
         # Try to view all tasks without logging in first
         with self.assertRaises(ValueError):
             view_all_data(user_id=1)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

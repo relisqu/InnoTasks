@@ -25,13 +25,14 @@ jobs:
         python -m pip install --upgrade pip
         pip install flake8 black
 
+    - name: Format code with Black
+      run: |
+        black .
+        
     - name: Lint code
       run: |
         flake8 .
 
-    - name: Format code with Black
-      run: |
-        black .
 
     - name: Commit changes
       run: |

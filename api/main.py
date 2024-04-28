@@ -5,6 +5,7 @@ import repository.repository as repo
 
 app = FastAPI()
 
+
 def start():
     """Launched with `poetry run start` at root level"""
     uvicorn.run("api.main:app", host="0.0.0.0", port=3000)
@@ -30,13 +31,49 @@ async def login(user: repo.UserLogin):
 
 
 @app.post("/task")
-async def add_task(user_id: int, task: str, task_status: str, task_priority: str, task_due_date: str):
-    repo.add_task(user_id, task, task_status, task_priority, task_due_date)
+async def add_task(task: repo.Task):
+    try:
+        repo.add_task(task)
+    except ValueError:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Task could not be added")
     return {"message": "Task added successfully"}
+
+
+@app.get('/task/{user_id}/{task_id}')
+async def get_task(user_id: int, task_id: int):
+    try:
+        return repo.get_task(user_id, task_id)
+    except ValueError:
+        print('get /task error', ValueError)
+
+
+@app.put('/task')
+async def edit_task_data(task: repo.TaskEdit):
+    try:
+        return repo.edit_task_data(task)
+    except ValueError:
+        print('put /task error', ValueError)
+
+
+@app.delete('/task/{user_id}/{task_id}')
+async def delete_data(user_id: int, task_id: int):
+    try:
+        return repo.delete_data(user_id, task_id)
+    except ValueError:
+        print('delete /task error', ValueError)
+
 
 @app.get('/tasks/{user_id}')
 async def view_all_data(user_id: int):
-    try: 
+    try:
         return repo.view_all_data(user_id)
     except ValueError:
         print('get /tasks error', ValueError)
+
+
+@app.get('/tasks/names/{user_id}')
+async def view_all_task_names(user_id: int):
+    try:
+        return repo.view_all_task_names(user_id)
+    except ValueError:
+        print('get /tasks/names error', ValueError)

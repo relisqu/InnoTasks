@@ -4,6 +4,7 @@ import hashlib
 
 db = db.Database()
 
+
 # Pydantic model for user
 class User(BaseModel):
     username: str
@@ -14,6 +15,23 @@ class User(BaseModel):
 class UserLogin(BaseModel):
     username: str
     password: str
+
+
+class Task(BaseModel):
+    user_id: int
+    task: str
+    task_status: str
+    task_priority: str
+    task_due_date: str
+
+
+class TaskEdit(BaseModel):
+    user_id: int
+    id: int
+    task: str
+    task_status: str
+    task_priority: str
+    task_due_date: str
 
 
 def register_user(user: User):
@@ -36,9 +54,11 @@ def login_user(user: UserLogin):
 def get_user(username: str):
     return db.get_user_by_username(username)
 
-def add_task(user_id: int, task: str, task_status: str, task_priority: str, task_due_date: str):
-    db.add_data(user_id, task, task_status, task_priority, task_due_date)
+
+def add_task(task: Task):
+    db.add_data(task.user_id, task.task, task.task_status, task.task_priority, task.task_due_date)
     return {"message": "Task added successfully"}
+
 
 def view_all_data(user_id: int):
     resp = db.view_all_data(user_id)
@@ -46,18 +66,18 @@ def view_all_data(user_id: int):
         return []
     return resp
 
-def add_task(user_id, task, task_status, task_priority, task_due_date):
-    db.add_data(user_id, task, task_status, task_priority, task_due_date)
-    
+
 def view_all_task_names(user_id):
     return db.view_all_task_names(user_id)
+
 
 def get_task(user_id, task_id):
     return db.get_task(user_id, task_id)
 
-def edit_task_data(user_id, task_id, new_task_name, new_task_status, new_task_priority, new_task_date):
-    print('repo edit task data')
-    db.edit_task_data(user_id, task_id, new_task_name, new_task_status, new_task_priority, new_task_date)
+
+def edit_task_data(task: TaskEdit):
+    db.edit_task_data(task.user_id, task.id, task.task, task.task_status, task.task_priority, task.task_due_date)
+
 
 def delete_data(user_id, task_id):
     db.delete_data(user_id, task_id)

@@ -33,7 +33,7 @@ class TestEndToEnd(unittest.TestCase):
                 task="Test task",
                 task_status="ToDo",
                 task_priority="High",
-                task_due_date="2024-05-01"
+                task_due_date="2024-05-01",
             )
         )
         self.assertEqual(response["message"], "Task added successfully")
@@ -47,7 +47,7 @@ class TestEndToEnd(unittest.TestCase):
         # Try to log in with invalid credentials
         user_login = UserLogin(username="nonexistentuser", password="wrongpassword")
         with self.assertRaises(ValueError):
-           login_user(user_login)
+            login_user(user_login)
 
     def test_duplicate_registration(self):
         # Try to register a user with a username that already exists
@@ -56,12 +56,12 @@ class TestEndToEnd(unittest.TestCase):
             register_user(user)
             register_user(user)
 
-
     def test_view_all_tasks_without_login(self):
         # Try to view all tasks without logging in first
         value = view_all_data(user_id=1)
         print(value)
         assert value == []
+
 
 if __name__ == "__main__":
     unittest.main()

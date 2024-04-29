@@ -54,7 +54,7 @@ class Database:
     def register_user(self, username, password_hash):
         user = self.get_user_by_username(username)
         if user:
-            return False
+            return None
         self.c.execute(
             "INSERT INTO users(username, password_hash) VALUES (?, ?)",
             (username, password_hash),
@@ -65,10 +65,10 @@ class Database:
     def authenticate_user(self, username, password_hash):
         user = self.get_user_by_username(username)
         if not user:
-            return False
+            return None
         if user[2] == password_hash:
             return user
-        return False
+        return None
 
     def add_data(self, user_id, task, task_status, task_priority, task_due):
         self.c.execute(

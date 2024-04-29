@@ -94,4 +94,4 @@ def test_view_all_task_names(init):
     response = client.get(f"/tasks/names/{user_id}")
     assert response.status_code == 200
     print(response.json())
-    assert response.json() == [["Test task", 1], ["Test task2", 2], ["Test2 task3", 3]]
+    assert response.json() == [["Test task", 3], ["Test task2", 4], ["Test2 task3", 5]]

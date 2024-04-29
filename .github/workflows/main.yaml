@@ -2,6 +2,9 @@ name: CI/CD
 
 on: [push]
 
+env:
+  API_URL: http://0.0.0.0:3000
+
 jobs:
   linter:
     runs-on: ubuntu-latest
@@ -22,15 +25,9 @@ jobs:
         python -m pip install --upgrade pip
         pip install flake8 black
 
-    - name: Format code with Black
-      run: |
-        black .
-
-    - uses: stefanzweifel/git-auto-commit-action@v5
-
     - name: Lint code
       run: |
-        flake8 --ignore=E501  .
+        flake8  .
 
   security:
     runs-on: ubuntu-latest
@@ -70,3 +67,59 @@ jobs:
 
       - name: Do combined coverage
         run: poetry run pytest --cov=api --cov=database --cov=repository --cov-branch --cov-report=term --cov-fail-under=60
+
+
+  performance:
+    needs: tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.12'
+
+      - name: Setup poetry
+        run: pip install poetry
+
+      - name: Install poetry
+        run: poetry install
+
+      - name: Run fastapi locally
+        run: |
+          poetry run uvicorn api.main:app --port 3000 --host 0.0.0.0 > /dev/null 2>&1 &
+          sleep 2
+
+      - name: Load test
+        run: |
+          poetry run locust -f tests/performance/locustfile.py \
+              --headless \
+              --host $API_URL \
+              --spawn-rate 5 \
+              --users 50 \
+              --run-time 30 \
+              --csv report.csv \
+              --html report.html
+
+      - name: Load test summary
+        run: |
+          req_total=$(awk -F',' 'END {print $3}' report.csv_stats.csv)
+          req_fail=$(awk -F',' 'END {print $4}' report.csv_stats.csv)
+          fail_rate=$(( (req_fail + req_total) / 100 ))
+          rps=$(awk -F',' 'END {print $10}' report.csv_stats.csv)
+          p90=$(awk -F',' 'END {print $16}' report.csv_stats.csv)
+          p95=$(awk -F',' 'END {print $17}' report.csv_stats.csv)
+          p99=$(awk -F',' 'END {print $19}' report.csv_stats.csv)
+          
+          echo Fail Rate: ${fail_rate}%
+          echo RPS: $rps
+          echo 90 Percentile: ${p90}ms
+          echo 95 Percentile: ${p95}ms
+          echo 99 Percentile: ${p99}ms
+
+      - name: Store locust report
+        uses: actions/upload-artifact@v3
+        with:
+          name: locust-report
+          path: report.html

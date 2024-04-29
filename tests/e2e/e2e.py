@@ -1,6 +1,9 @@
+import os
 import pytest
 import unittest
-from repository.repository import *
+from repository.repository import User, UserLogin, Task
+from repository.repository import register_user, login_user
+from repository.repository import add_task, view_all_data
 
 
 class TestEndToEnd(unittest.TestCase):
@@ -45,7 +48,8 @@ class TestEndToEnd(unittest.TestCase):
 
     def test_invalid_login(self):
         # Try to log in with invalid credentials
-        user_login = UserLogin(username="nonexistentuser", password="wrongpassword")
+        user_login = UserLogin(username="nonexistentuser",
+                               password="wrongpassword")
         with self.assertRaises(ValueError):
             login_user(user_login)
 

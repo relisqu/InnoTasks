@@ -46,7 +46,6 @@ def test_login_invalid_credentials():
         assert login_error_btn.value == True
 
 
-
 def test_view_all_data(app):
     # Simulate user session state
     st.session_state["user_id"] = "test_user_id"

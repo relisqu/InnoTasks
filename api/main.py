@@ -12,7 +12,8 @@ async def register_user(user: repo.User):
         repo.register_user(user)
     except ValueError:
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST, detail="User already exists"
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="User already exists"
         )
     return user
 
@@ -35,7 +36,8 @@ async def add_task(task: repo.Task):
         repo.add_task(task)
     except ValueError:
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST, detail="Task could not be added"
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Task could not be added"
         )
     return {"message": "Task added successfully"}
 

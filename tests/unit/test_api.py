@@ -65,9 +65,9 @@ def test_view_all_data(init):
 
 
 def test_view_all_task_names(init):
-    user_id = 1
+    user_id = 3
     task_data = {
-        "user_id": 1,
+        "user_id": 3,
         "task": "Test task",
         "task_status": "ToDo",
         "task_priority": "Normal",
@@ -75,8 +75,16 @@ def test_view_all_task_names(init):
     }
     response = client.post("/task", json=task_data)
     task_data = {
-        "user_id": 1,
-        "task": "Test2 task",
+        "user_id": 3,
+        "task": "Test task2",
+        "task_status": "ToDo",
+        "task_priority": "Normal",
+        "task_due_date": "2024-05-01",
+    }
+    response = client.post("/task", json=task_data)
+    task_data = {
+        "user_id": 3,
+        "task": "Test task3",
         "task_status": "ToDo",
         "task_priority": "Normal",
         "task_due_date": "2024-05-01",
@@ -86,4 +94,4 @@ def test_view_all_task_names(init):
     response = client.get(f"/tasks/names/{user_id}")
     assert response.status_code == 200
     print(response.json())
-    assert response.json() == [["Test task", 1], ["Test task", 2], ["Test2 task", 3]]
+    assert response.json() == [["Test task", 1], ["Test task2", 2], ["Test2 task3", 3]]

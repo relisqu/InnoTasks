@@ -50,14 +50,14 @@ def main_login():
 
         if choice == "Sign Up":
             new_user = st.text_input("Enter your unique username")
-            new_passwd = st.text_input("Create Password", type="password")
-            new_dubl_pswd = st.text_input("Password one more time", type="password")
+            new_pswd = st.text_input("Create Password", type="password")
+            copy_pswd = st.text_input("Password one more time", type="password")
 
             if st.button("Create my account"):
-                if new_passwd != new_dubl_pswd:
+                if new_pswd != copy_pswd:
                     st.error("Passwords are not matched")
-                if new_user and new_passwd and new_dubl_pswd:
-                    response = register(new_user, new_passwd)
+                if new_user and new_pswd and copy_pswd:
+                    response = register(new_user, new_pswd)
                     if response:
                         st.success("Account created successfully!")
                         st.balloons()

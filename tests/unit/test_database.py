@@ -1,8 +1,5 @@
 import unittest
-from unittest.mock import patch
-from unittest.mock import MagicMock
-import sqlite3
-from database.db import *
+from database.db import Database
 
 
 class TestDatabaseFunctions(unittest.TestCase):

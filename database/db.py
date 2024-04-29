@@ -25,7 +25,7 @@ class Database:
         self.c.execute(
             """
             CREATE TABLE IF NOT EXISTS taskstable (
-                id INTEGER PRIMARY KEY, 
+                id INTEGER PRIMARY KEY,
                 user_id INTEGER,
                 task TEXT,
                 task_status TEXT,
@@ -73,10 +73,10 @@ class Database:
     def add_data(self, user_id, task, task_status, task_priority, task_due_date):
         self.c.execute(
             """INSERT INTO taskstable(
-            user_id, 
-            task, 
-            task_status, 
-            task_priority, 
+            user_id,
+            task,
+            task_status,
+            task_priority,
             task_due_date
             ) VALUES (?, ?, ?, ?, ?)""",
             (user_id, task, task_status, task_priority, task_due_date),
@@ -85,11 +85,11 @@ class Database:
 
     def view_all_data(self, user_id):
         self.c.execute(
-            """SELECT 
-                task, 
-                task_status, 
-                task_priority, 
-                task_due_date 
+            """SELECT
+                task,
+                task_status,
+                task_priority,
+                task_due_date
             FROM taskstable WHERE user_id=?""",
             (user_id,),
         )
@@ -128,11 +128,11 @@ class Database:
         new_task_date,
     ):
         self.c.execute(
-            """UPDATE taskstable SET 
-                task=?, 
-                task_status=?, 
-                task_priority=?, 
-                task_due_date=? 
+            """UPDATE taskstable SET
+                task=?,
+                task_status=?,
+                task_priority=?,
+                task_due_date=?
             WHERE user_id=? AND id=?""",
             (
                 new_task_name,

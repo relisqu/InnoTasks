@@ -1,10 +1,6 @@
 import pytest
 import unittest
 from repository.repository import *
-from unittest.mock import patch
-from unittest.mock import MagicMock
-import sqlite3
-from database.db import *
 
 
 class TestEndToEnd(unittest.TestCase):

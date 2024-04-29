@@ -70,7 +70,7 @@ class Database:
             return user
         return False
 
-    def add_data(self, user_id, task, task_status, task_priority, task_due_date):
+    def add_data(self, user_id, task, task_status, task_priority, task_due):
         self.c.execute(
             """INSERT INTO taskstable(
             user_id,
@@ -79,7 +79,7 @@ class Database:
             task_priority,
             task_due_date
             ) VALUES (?, ?, ?, ?, ?)""",
-            (user_id, task, task_status, task_priority, task_due_date),
+            (user_id, task, task_status, task_priority, task_due),
         )
         self.conn.commit()
 
@@ -98,14 +98,16 @@ class Database:
 
     def view_all_task_names(self, user_id):
         self.c.execute(
-            "SELECT DISTINCT task, id FROM taskstable WHERE user_id=?", (user_id,)
+            "SELECT DISTINCT task, id FROM taskstable WHERE user_id=?",
+            (user_id,)
         )
         data = self.c.fetchall()
         return data
 
     def get_task(self, user_id, task_id):
         self.c.execute(
-            "SELECT * FROM taskstable WHERE user_id=? AND id=?", (user_id, task_id)
+            "SELECT * FROM taskstable WHERE user_id=? AND id=?",
+            (user_id, task_id)
         )
         data = self.c.fetchall()
         return data
@@ -150,7 +152,8 @@ class Database:
     def delete_data(self, user_id, task_id):
         self.backup_sqlite_db()
         self.c.execute(
-            "DELETE FROM taskstable WHERE user_id=? AND id=?", (user_id, task_id)
+            "DELETE FROM taskstable WHERE user_id=? AND id=?",
+            (user_id, task_id)
         )
         self.conn.commit()
 

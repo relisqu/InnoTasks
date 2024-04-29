@@ -73,7 +73,7 @@ def test_view_all_task_names(init):
         "task_priority": "Normal",
         "task_due_date": "2024-05-01",
     }
-    response = client.post("/task", json=task_data)
+    _ = client.post("/task", json=task_data)
     task_data = {
         "user_id": 3,
         "task": "Test task2",
@@ -81,7 +81,7 @@ def test_view_all_task_names(init):
         "task_priority": "Normal",
         "task_due_date": "2024-05-01",
     }
-    response = client.post("/task", json=task_data)
+    _ = client.post("/task", json=task_data)
     task_data = {
         "user_id": 3,
         "task": "Test task3",
@@ -89,7 +89,7 @@ def test_view_all_task_names(init):
         "task_priority": "Normal",
         "task_due_date": "2024-05-01",
     }
-    response = client.post("/task", json=task_data)
+    _ = client.post("/task", json=task_data)
 
     response = client.get(f"/tasks/names/{user_id}")
     assert response.status_code == 200

@@ -15,37 +15,53 @@ class TestDatabaseFunctions(unittest.TestCase):
         self.assertIsNone(user_after_deletion, "User should not exist after deletion")
 
     def test_delete_user_tasks_and_check_existence(self):
+<<<<<<< Updated upstream
         user = self.database.register_user("test_user", "password123")
         self.database.add_data(user[0], "Task 1", "ToDo", "Important", "2024-04-30")
         self.database.add_data(user[0], "Task 2", "Doing", "Important", "2024-05-01")
+=======
+        user = self.database.register_user("test_user",
+                                           "password123")
+        self.database.add_data(user[0],
+                               "Task 1", "ToDo", "Important", "2024-04-30")
+        self.database.add_data(user[0],
+                               "Task 2", "Doing", "Important", "2024-05-01")
+>>>>>>> Stashed changes
 
         self.database.delete_user_tasks(user[0])
         tasks_after_deletion = self.database.view_all_data(user[0])
         self.assertEqual(
-            0, len(tasks_after_deletion), "No tasks should exist after deletion"
+            0, len(tasks_after_deletion),
+            "No tasks should exist after deletion"
         )
 
     def test_register_user(self):
-        self.assertTrue(self.database.register_user("test_user", "password123"))
+        self.assertTrue(self.database.register_user
+                        ("test_user", "password123"))
         self.assertFalse(
             self.database.register_user("test_user", "password123")
         )  # Duplicate registration should fail
 
     def test_authenticate_user(self):
         self.database.register_user("test_user", "password123")
-        self.assertTrue(self.database.authenticate_user("test_user", "password123"))
-        self.assertFalse(self.database.authenticate_user("test_user", "wrong_password"))
+        self.assertTrue(self.database.authenticate_user
+                        ("test_user", "password123"))
+        self.assertFalse(self.database.authenticate_user
+                         ("test_user", "wrong_password"))
 
     def test_add_and_view_task(self):
         user = self.database.register_user("test_user", "password123")
-        self.database.add_data(user[0], "Test Task", "ToDo", "Important", "2024-05-01")
+        self.database.add_data(user[0],
+                               "Test Task", "ToDo", "Important", "2024-05-01")
         tasks = self.database.view_all_data(user[0])
         self.assertEqual(1, len(tasks))
         self.assertEqual("Test Task", tasks[0][0])
 
     def test_edit_task(self):
-        user = self.database.register_user("test_user", "password123")
-        self.database.add_data(user[0], "Test Task", "ToDo", "Important", "2024-05-01")
+        user = self.database.register_user("test_user",
+                                           "password123")
+        self.database.add_data(user[0],
+                               "Test Task", "ToDo", "Important", "2024-05-01")
         self.database.edit_task_data(
             user[0], 1, "Updated Task", "Done", "Not Important", "2024-05-02"
         )
@@ -56,9 +72,10 @@ class TestDatabaseFunctions(unittest.TestCase):
         self.assertEqual("2024-05-02", tasks[0][3])
 
     def test_delete_task(self):
-        user = self.database.register_user("test_user", "password123")
-        self.database.add_data(user[0], "Test Task", "ToDo", "Important", "2024-05-01")
-
+        user = self.database.register_user("test_user",
+                                           "password123")
+        self.database.add_data(user[0],
+                               "Test Task", "ToDo", "Important", "2024-05-01")
         user_tasks = self.database.view_all_task_names(user[0])
         self.database.delete_data(user[0], dict(user_tasks)["Test Task"])
         tasks = self.database.view_all_data(user[0])
@@ -83,8 +100,10 @@ class TestDatabaseFunctions(unittest.TestCase):
         self.assertEqual(user[1], "test_user")
 
     def test_get_task(self):
-        user = self.database.register_user("test_user", "password123")
-        self.database.add_data(user[0], "Test Task", "ToDo", "Important", "2024-05-01")
+        user = self.database.register_user("test_user",
+                                           "password123")
+        self.database.add_data(user[0],
+                               "Test Task", "ToDo", "Important", "2024-05-01")
         user_tasks = self.database.view_all_task_names(user[0])
         task = self.database.get_task(user[0], dict(user_tasks)["Test Task"])
         self.assertIsNotNone(task)

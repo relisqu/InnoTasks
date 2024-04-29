@@ -43,4 +43,8 @@ def test_login_invalid_credentials():
         login_error_btn.click()
         login_error_btn.run()
     except Exception as e:
-        assert login_error_btn.value == True
+        try:
+            assert login_error_btn.value is True
+        finally:
+            del e
+

@@ -131,10 +131,11 @@ def main_application(user_logged_id):
                 new_task_name = st.text_area("Task To Do", task_name)
 
             with col2:
-                new_task_status = st.selectbox("Status", ["ToDo", "Doing", "Done"])
+                new_task_status = st.selectbox("Status",
+                                               ["ToDo", "Doing", "Done"])
                 new_task_priority = st.selectbox(
-                    "Priority",
-                    ["Not important", "Important", "Very important", "Critical"],
+                    "Priority", ["Not important", "Important",
+                                 "Very important", "Critical"],
                 )
                 new_task_due_date = str(
                     st.date_input(label="Due Date", value=task_due_date)
@@ -149,7 +150,8 @@ def main_application(user_logged_id):
                     new_task_priority,
                     new_task_due_date,
                 )
-                st.success("Updated ::{} ::To {}".format(task_name, new_task_name))
+                st.success("Updated ::{} ::To {}".format(task_name,
+                                                         new_task_name))
 
     elif choice == "Delete":
         st.subheader("Delete")

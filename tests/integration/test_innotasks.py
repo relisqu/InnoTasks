@@ -47,4 +47,3 @@ def test_login_invalid_credentials():
             assert login_error_btn.value is True
         finally:
             del e
-

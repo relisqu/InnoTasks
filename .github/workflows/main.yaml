@@ -22,12 +22,6 @@ jobs:
         python -m pip install --upgrade pip
         pip install flake8 black
 
-    - name: Format code with Black
-      run: |
-        black .
-
-    - uses: stefanzweifel/git-auto-commit-action@v5
-
     - name: Lint code
       run: |
         flake8 --ignore=E501,F405,F403  .

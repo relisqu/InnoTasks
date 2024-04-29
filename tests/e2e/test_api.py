@@ -48,8 +48,7 @@ class TestEndToEnd(unittest.TestCase):
 
     def test_invalid_login(self):
         # Try to log in with invalid credentials
-        user_login = UserLogin(username="nonexistentuser",
-                               password="wrongpassword")
+        user_login = UserLogin(username="nonexistentuser", password="wrongpassword")
         with self.assertRaises(ValueError):
             login_user(user_login)
 

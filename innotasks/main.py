@@ -50,10 +50,8 @@ def main_login():
 
         if choice == "Sign Up":
             new_user = st.text_input("Enter your unique username")
-            new_pswd = st.text_input("Create Password",
-                                     type="password")
-            copy_pswd = st.text_input("Password one more time",
-                                      type="password")
+            new_pswd = st.text_input("Create Password", type="password")
+            copy_pswd = st.text_input("Password one more time", type="password")
 
             if st.button("Create my account"):
                 if new_pswd != copy_pswd:
@@ -83,17 +81,14 @@ def main_application(user_logged_id):
             task = st.text_area("Task To Do")
 
         with col2:
-            task_status = st.selectbox("Status",
-                                       ["ToDo", "Doing", "Done"])
+            task_status = st.selectbox("Status", ["ToDo", "Doing", "Done"])
             task_priority = st.selectbox(
-                "Priority", ["Not important", "Important",
-                             "Very important", "Critical"]
+                "Priority", ["Not important", "Important", "Very important", "Critical"]
             )
             task_due_date = str(st.date_input("Due Date"))
 
         if st.button("Add Task"):
-            add_task(user_logged_id, task, task_status,
-                     task_priority, task_due_date)
+            add_task(user_logged_id, task, task_status, task_priority, task_due_date)
             st.success("Added ::{} ::To Task".format(task))
 
     elif choice == "Read":
@@ -125,21 +120,20 @@ def main_application(user_logged_id):
         task_result = get_task(user_logged_id, task_id)
 
         if task_result:
-            task_id, _, task_name, task_status, \
-                task_priority, task_due_date_str = (task_result[0])
-            task_due_date = datetime.strptime(task_due_date_str,
-                                              "%Y-%m-%d").date()
+            task_id, _, task_name, task_status, task_priority, task_due_date_str = (
+                task_result[0]
+            )
+            task_due_date = datetime.strptime(task_due_date_str, "%Y-%m-%d").date()
             col1, col2 = st.columns(2)
 
             with col1:
                 new_task_name = st.text_area("Task To Do", task_name)
 
             with col2:
-                new_task_status = st.selectbox("Status",
-                                               ["ToDo", "Doing", "Done"])
+                new_task_status = st.selectbox("Status", ["ToDo", "Doing", "Done"])
                 new_task_priority = st.selectbox(
-                    "Priority", ["Not important", "Important",
-                                 "Very important", "Critical"],
+                    "Priority",
+                    ["Not important", "Important", "Very important", "Critical"],
                 )
                 new_task_due_date = str(
                     st.date_input(label="Due Date", value=task_due_date)
@@ -154,8 +148,7 @@ def main_application(user_logged_id):
                     new_task_priority,
                     new_task_due_date,
                 )
-                st.success("Updated ::{} ::To {}".format(task_name,
-                                                         new_task_name))
+                st.success("Updated ::{} ::To {}".format(task_name, new_task_name))
 
     elif choice == "Delete":
         st.subheader("Delete")

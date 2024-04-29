@@ -30,7 +30,7 @@ jobs:
 
     - name: Lint code
       run: |
-        flake8 --ignore=E501,F405,F403  .
+        flake8 --ignore=E501, F405, F403  .
 
   security:
     runs-on: ubuntu-latest

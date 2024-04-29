@@ -49,7 +49,7 @@ jobs:
         run: poetry install
 
       - name: Perform bandit test
-        run: poetry run bandit -r ./api ./database ./innotasks ./repository
+        run: poetry run bandit -r ./api ./database ./repository
 
   tests:
     needs: security

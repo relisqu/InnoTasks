@@ -25,7 +25,7 @@ class Database:
         self.c.execute(
             """
             CREATE TABLE IF NOT EXISTS taskstable (
-                id INTEGER PRIMARY KEY, 
+                id INTEGER PRIMARY KEY,
                 user_id INTEGER,
                 task TEXT,
                 task_status TEXT,
@@ -73,10 +73,10 @@ class Database:
     def add_data(self, user_id, task, task_status, task_priority, task_due_date):
         self.c.execute(
             """INSERT INTO taskstable(
-            user_id, 
-            task, 
-            task_status, 
-            task_priority, 
+            user_id,
+            task,
+            task_status,
+            task_priority,
             task_due_date
             ) VALUES (?, ?, ?, ?, ?)""",
             (user_id, task, task_status, task_priority, task_due_date),
@@ -85,11 +85,11 @@ class Database:
 
     def view_all_data(self, user_id):
         self.c.execute(
-            """SELECT 
-                task, 
-                task_status, 
-                task_priority, 
-                task_due_date 
+            """SELECT
+                task,
+                task_status,
+                task_priority,
+                task_due_date
             FROM taskstable WHERE user_id=?""",
             (user_id,),
         )
@@ -98,14 +98,16 @@ class Database:
 
     def view_all_task_names(self, user_id):
         self.c.execute(
-            "SELECT DISTINCT task, id FROM taskstable WHERE user_id=?", (user_id,)
+            "SELECT DISTINCT task, id FROM taskstable WHERE user_id=?",
+            (user_id,)
         )
         data = self.c.fetchall()
         return data
 
     def get_task(self, user_id, task_id):
         self.c.execute(
-            "SELECT * FROM taskstable WHERE user_id=? AND id=?", (user_id, task_id)
+            "SELECT * FROM taskstable WHERE user_id=? AND id=?",
+            (user_id, task_id)
         )
         data = self.c.fetchall()
         return data
@@ -128,11 +130,11 @@ class Database:
         new_task_date,
     ):
         self.c.execute(
-            """UPDATE taskstable SET 
-                task=?, 
-                task_status=?, 
-                task_priority=?, 
-                task_due_date=? 
+            """UPDATE taskstable SET
+                task=?,
+                task_status=?,
+                task_priority=?,
+                task_due_date=?
             WHERE user_id=? AND id=?""",
             (
                 new_task_name,
@@ -150,7 +152,8 @@ class Database:
     def delete_data(self, user_id, task_id):
         self.backup_sqlite_db()
         self.c.execute(
-            "DELETE FROM taskstable WHERE user_id=? AND id=?", (user_id, task_id)
+            "DELETE FROM taskstable WHERE user_id=? AND id=?",
+            (user_id, task_id)
         )
         self.conn.commit()
 

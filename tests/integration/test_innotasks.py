@@ -1,6 +1,4 @@
-import streamlit as st
 from streamlit.testing.v1 import AppTest
-import pytest
 
 
 def test_login_successful():
@@ -21,7 +19,7 @@ def test_login_successful():
     login_btn.click()
 
     # Check if user is logged in
-    assert login_btn.value == True
+    assert login_btn.value is True
 
 
 def test_login_invalid_credentials():
@@ -45,4 +43,4 @@ def test_login_invalid_credentials():
         login_error_btn.click()
         login_error_btn.run()
     except Exception as e:
-        assert login_error_btn.value == True
+        assert login_error_btn.value is True

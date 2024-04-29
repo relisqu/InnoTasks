@@ -1,8 +1,5 @@
 import unittest
-from unittest.mock import patch
-from unittest.mock import MagicMock
-import sqlite3
-from database.db import *
+from database.db import Database
 
 
 class TestDatabaseFunctions(unittest.TestCase):
@@ -15,10 +12,12 @@ class TestDatabaseFunctions(unittest.TestCase):
         self.database.register_user("test_user", "password123")
         self.database.delete_user("test_user")
         user_after_deletion = self.database.get_user_by_username("test_user")
-        self.assertIsNone(user_after_deletion, "User should not exist after deletion")
+        self.assertIsNone(user_after_deletion,
+                          "User should not exist after deletion")
 
     def test_delete_user_tasks_and_check_existence(self):
-        user = self.database.register_user("test_user", "password123")
+        user = self.database.register_user("test_user",
+                                           "password123")
         self.database.add_data(user[0], "Task 1", "ToDo", "Important", "2024-04-30")
         self.database.add_data(user[0], "Task 2", "Doing", "Important", "2024-05-01")
 
@@ -47,7 +46,8 @@ class TestDatabaseFunctions(unittest.TestCase):
         self.assertEqual("Test Task", tasks[0][0])
 
     def test_edit_task(self):
-        user = self.database.register_user("test_user", "password123")
+        user = self.database.register_user("test_user",
+                                           "password123")
         self.database.add_data(user[0], "Test Task", "ToDo", "Important", "2024-05-01")
         self.database.edit_task_data(
             user[0], 1, "Updated Task", "Done", "Not Important", "2024-05-02"
@@ -59,7 +59,8 @@ class TestDatabaseFunctions(unittest.TestCase):
         self.assertEqual("2024-05-02", tasks[0][3])
 
     def test_delete_task(self):
-        user = self.database.register_user("test_user", "password123")
+        user = self.database.register_user("test_user",
+                                           "password123")
         self.database.add_data(user[0], "Test Task", "ToDo", "Important", "2024-05-01")
 
         user_tasks = self.database.view_all_task_names(user[0])
@@ -86,7 +87,8 @@ class TestDatabaseFunctions(unittest.TestCase):
         self.assertEqual(user[1], "test_user")
 
     def test_get_task(self):
-        user = self.database.register_user("test_user", "password123")
+        user = self.database.register_user("test_user",
+                                           "password123")
         self.database.add_data(user[0], "Test Task", "ToDo", "Important", "2024-05-01")
         user_tasks = self.database.view_all_task_names(user[0])
         task = self.database.get_task(user[0], dict(user_tasks)["Test Task"])

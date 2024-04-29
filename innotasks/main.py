@@ -50,10 +50,8 @@ def main_login():
 
         if choice == "Sign Up":
             new_user = st.text_input("Enter your unique username")
-            new_pswd = st.text_input("Create Password",
-                                     type="password")
-            copy_pswd = st.text_input("Password one more time",
-                                      type="password")
+            new_pswd = st.text_input("Create Password", type="password")
+            copy_pswd = st.text_input("Password one more time", type="password")
 
             if st.button("Create my account"):
                 if new_pswd != copy_pswd:
@@ -85,14 +83,12 @@ def main_application(user_logged_id):
         with col2:
             task_status = st.selectbox("Status", ["ToDo", "Doing", "Done"])
             task_priority = st.selectbox(
-                "Priority",
-                ["Not important", "Important", "Very important", "Critical"]
+                "Priority", ["Not important", "Important", "Very important", "Critical"]
             )
             task_due_date = str(st.date_input("Due Date"))
 
         if st.button("Add Task"):
-            add_task(user_logged_id, task, task_status,
-                     task_priority, task_due_date)
+            add_task(user_logged_id, task, task_status, task_priority, task_due_date)
             st.success("Added ::{} ::To Task".format(task))
 
     elif choice == "Read":

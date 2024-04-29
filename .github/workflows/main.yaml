@@ -86,7 +86,7 @@ jobs:
       - name: Install poetry
         run: poetry install
 
-      - name: run fastapi locally
+      - name: Run fastapi locally
         run: |
           poetry run uvicorn api.main:app --port 3000 --host 0.0.0.0 > /dev/null 2>&1 &
           sleep 2
@@ -95,14 +95,14 @@ jobs:
         run: |
           poetry run locust -f tests/performance/locustfile.py \
               --headless \
-              --host $HOST \
+              --host $API_URL \
               --spawn-rate 5 \
               --users 50 \
               --run-time 30 \
               --csv report.csv \
               --html report.html
 
-      - name: load test summary
+      - name: Load test summary
         run: |
           req_total=$(awk -F',' 'END {print $3}' report.csv_stats.csv)
           req_fail=$(awk -F',' 'END {print $4}' report.csv_stats.csv)
@@ -118,7 +118,7 @@ jobs:
           echo 95 Percentile: ${p95}ms
           echo 99 Percentile: ${p99}ms
 
-      - name: store locust report
+      - name: Store locust report
         uses: actions/upload-artifact@v3
         with:
           name: locust-report

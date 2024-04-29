@@ -15,18 +15,12 @@ class TestDatabaseFunctions(unittest.TestCase):
         self.assertIsNone(user_after_deletion, "User should not exist after deletion")
 
     def test_delete_user_tasks_and_check_existence(self):
-<<<<<<< Updated upstream
-        user = self.database.register_user("test_user", "password123")
-        self.database.add_data(user[0], "Task 1", "ToDo", "Important", "2024-04-30")
-        self.database.add_data(user[0], "Task 2", "Doing", "Important", "2024-05-01")
-=======
         user = self.database.register_user("test_user",
                                            "password123")
         self.database.add_data(user[0],
                                "Task 1", "ToDo", "Important", "2024-04-30")
         self.database.add_data(user[0],
                                "Task 2", "Doing", "Important", "2024-05-01")
->>>>>>> Stashed changes
 
         self.database.delete_user_tasks(user[0])
         tasks_after_deletion = self.database.view_all_data(user[0])
